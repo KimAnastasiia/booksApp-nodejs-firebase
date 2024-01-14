@@ -7,7 +7,7 @@ describe('GET /books - return list of books', () => {
 
     expect(response.status).toBe(200);
 
-    expect(response.body.length).toBeGreaterThan(0); 
+    expect(response.body.length).toBeGreaterThan(0);
   });
 });
 
@@ -16,9 +16,18 @@ describe('GET /books - book has the properties id, title, author', () => {
     const response = await request(app).get('/books');
 
     expect(response.status).toBe(200);
- 
+
     expect(response.body[0]).toHaveProperty('id');
     expect(response.body[0]).toHaveProperty('title');
     expect(response.body[0]).toHaveProperty('author');
+  });
+});
+
+describe('GET /books/:id - return a book', () => {
+  it('should return a JSON book', async () => {
+
+    const response = await request(app).get('/books/-No-XUZ9NmbqnkTPLWTm');
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ "author": "testAuthor", "title": "testTitle" });
   });
 });
