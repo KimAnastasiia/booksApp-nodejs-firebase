@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
-
+let bookTestId = ""
 describe('GET /books - return list of books', () => {
   it('should return a JSON list of books', async () => {
     const response = await request(app).get('/books');
@@ -23,11 +23,29 @@ describe('GET /books - book has the properties id, title, author', () => {
   });
 });
 
+describe('POST /books - create a book', () => {
+  it('should return book id', async () => {
+    const bookData = {
+      author: 'testAuthor',
+      title: 'testTitle'
+    };
+    const response = await request(app)
+      .post('/books')
+      .send(bookData)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    bookTestId = response.body.id
+  });
+});
+
 describe('GET /books/:id - return a book', () => {
   it('should return a JSON book', async () => {
 
-    const response = await request(app).get('/books/-No-XUZ9NmbqnkTPLWTm');
+    const response = await request(app).get('/books/' + bookTestId);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ "author": "testAuthor", "title": "testTitle" });
   });
 });
+

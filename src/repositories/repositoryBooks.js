@@ -32,6 +32,18 @@ repositoryBooks = {
           console.error(error);
           return null
         }
-  }
+  },
+  insertBook: async (author, title) => {
+    try {
+        const snapshot  = await booksRef.push({
+          author,
+          title
+        })
+        return snapshot.key
+      } catch (error) {
+        console.error(error);
+        return null
+      }
+}
 }
 module.exports = repositoryBooks
