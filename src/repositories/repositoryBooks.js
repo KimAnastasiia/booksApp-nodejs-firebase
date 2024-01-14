@@ -49,15 +49,20 @@ repositoryBooks = {
   editBook: async (id, author, title) => {
     try {
       
-      const bookRefForPost = booksRef.child(id);
-      await bookRefForPost.update({
+      const bookRef  = booksRef.child(id);
+
+      const updatedBookSnapshot = await bookRef.once('value');
+
+      if (!updatedBookSnapshot.exists()) { 
+        console.log('Book not found');
+        return null
+      }
+      await bookRef.update({
         author,
         title
       });
-
-      const updatedBookSnapshot = await bookRefForPost.once('value');
-      const updatedBook = updatedBookSnapshot.val();
-      
+      const updatedBookSnapshotAfterUpdate = await bookRef.once('value');
+      const updatedBook = updatedBookSnapshotAfterUpdate.val();
       return updatedBook;
     } catch (error) {
       console.error(error);
