@@ -1,17 +1,15 @@
-const admin = require('../../database');
-const booksRef = admin.database().ref('/books');
+const { firestore } = require('../../database');
+const booksCollection = firestore.collection('/books');
 repositoryBooks = {
 
   getAllBooks: async () => {
     try {
-
-      //const userRef = await admin.firestore().collection('books').add({ titulo: "Mi libro"});
-      const snapshot = await booksRef.once('value')
+      const snapshot = await booksCollection.get()
       // Convert the snapshot to an array of books
       const books = [];
       snapshot.forEach((childSnapshot) => {
-        const book = childSnapshot.val();
-        book.id = childSnapshot.key;
+        const book = childSnapshot.data(); // Use data() to get the document data
+        book.id = childSnapshot.id; // Use id to get the document ID
         books.push(book);
       });
 
@@ -24,7 +22,7 @@ repositoryBooks = {
   },
   getBookById: async (id) => {
     try {
-      const snapshot = await booksRef.child(id).once('value')
+      const snapshot = await booksCollection.child(id).once('value')
       const book = snapshot.val()
       if (book) {
         return (book)
@@ -36,7 +34,7 @@ repositoryBooks = {
   },
   insertBook: async (author, title) => {
     try {
-      const snapshot = await booksRef.push({
+      const snapshot = await booksCollection.push({
         author,
         title
       })
@@ -49,7 +47,7 @@ repositoryBooks = {
   editBook: async (id, author, title) => {
     try {
       
-      const bookRef  = booksRef.child(id);
+      const bookRef  = booksCollection.child(id);
 
       const book = await bookRef.once('value');
 
@@ -71,7 +69,7 @@ repositoryBooks = {
   },
   deleteBook: async (id) => {
     try {
-      const bookRef = booksRef.child(id);
+      const bookRef = booksCollection.child(id);
       const snapshot = await bookRef.once('value');
       if (!snapshot.exists()) { 
         console.log('Book not found');

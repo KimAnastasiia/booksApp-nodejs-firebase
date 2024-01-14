@@ -5,4 +5,5 @@ admin.initializeApp({
   databaseURL:'https://books-store-dc964-default-rtdb.firebaseio.com/',
   projectId: 'books-store-dc964',
 })
-module.exports = admin
+const firestore = admin.firestore();
+module.exports = {firestore}
