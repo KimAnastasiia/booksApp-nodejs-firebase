@@ -73,13 +73,13 @@ repositoryBooks = {
   },
   deleteBook: async (id) => {
     try {
-      const bookRef = booksCollection.child(id);
-      const snapshot = await bookRef.once('value');
-      if (!snapshot.exists()) { 
+      const bookRef = booksCollection.doc(id);
+      const bookDoc  = await bookRef.get();
+      if (!bookDoc.exists) { 
         console.log('Book not found');
         return null
       }
-      await bookRef.remove();
+      await bookRef.delete();
       return({ message: 'Book deleted successfully' });
     } catch (error) {
       console.error(error);
