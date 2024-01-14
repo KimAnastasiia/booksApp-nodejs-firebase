@@ -51,9 +51,9 @@ repositoryBooks = {
       
       const bookRef  = booksRef.child(id);
 
-      const updatedBookSnapshot = await bookRef.once('value');
+      const book = await bookRef.once('value');
 
-      if (!updatedBookSnapshot.exists()) { 
+      if (!book.exists()) { 
         console.log('Book not found');
         return null
       }
@@ -71,13 +71,13 @@ repositoryBooks = {
   },
   deleteBook: async (id) => {
     try {
-      const bookRefDelete = booksRef.child(id);
-      const snapshot = await bookRefDelete.once('value');
+      const bookRef = booksRef.child(id);
+      const snapshot = await bookRef.once('value');
       if (!snapshot.exists()) { 
         console.log('Book not found');
         return null
       }
-      await bookRefDelete.remove();
+      await bookRef.remove();
       return({ message: 'Book deleted successfully' });
     } catch (error) {
       console.error(error);

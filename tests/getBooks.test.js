@@ -83,3 +83,20 @@ describe('DELETE /books/:id - return message', () => {
     expect(response.body).toEqual({"message":"Book deleted successfully"});
   });
 });
+
+describe('DELETE /books/:id - return error message', () => {
+  it('should return a error message indicating that the book not exists', async () => {
+    const response = await request(app)
+    .delete('/books/11111111')
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({
+      "error": [
+          {
+              "msg": "not possible delete book",
+              "code": 500
+          }
+      ]
+  });
+  });
+});
+
