@@ -1,4 +1,4 @@
-const {getAllBooks, getBookById, insertBook, editBook} = require("../services/serviceBooks")
+const {getAllBooks, getBookById, insertBook, editBook, deleteBook} = require("../services/serviceBooks")
 let express = require('express');
 let controllerBooks = express.Router();
 
@@ -42,6 +42,17 @@ controllerBooks = {
             const { author,title } = req.body;
             let updatedBook = await editBook(id,author,title)
             return res.json(updatedBook)
+        }
+        catch (errors) {
+            return res.status(errors[0].code).json({ error: errors })
+        }
+    },
+    deleteBook: async (req, res) => {
+        
+        try {
+            const id = req.params.id;
+            let answer = await deleteBook(id)
+            return res.json(answer)
         }
         catch (errors) {
             return res.status(errors[0].code).json({ error: errors })

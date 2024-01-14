@@ -75,3 +75,11 @@ describe('GET /books/:id - return a book', () => {
   });
 });
 
+describe('DELETE /books/:id - return message', () => {
+  it('should return a message indicating that the book was successfully deleted', async () => {
+    const response = await request(app)
+    .delete('/books/'+bookTestId)
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({"message":"Book deleted successfully"});
+  });
+});

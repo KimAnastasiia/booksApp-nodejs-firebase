@@ -49,16 +49,31 @@ repositoryBooks = {
   editBook: async (id, author, title) => {
     try {
       
-      const bookRefForPo = booksRef.child(id);
-      await bookRefForPo.update({
+      const bookRefForPost = booksRef.child(id);
+      await bookRefForPost.update({
         author,
         title
       });
 
-      const updatedBookSnapshot = await bookRefForPo.once('value');
+      const updatedBookSnapshot = await bookRefForPost.once('value');
       const updatedBook = updatedBookSnapshot.val();
       
       return updatedBook;
+    } catch (error) {
+      console.error(error);
+      return null
+    }
+  },
+  deleteBook: async (id) => {
+    try {
+      const bookRefDelete = booksRef.child(id);
+      const snapshot = await bookRefDelete.once('value');
+      if (!snapshot.exists()) { 
+        console.log('Book not found');
+        return null
+      }
+      await bookRefDelete.remove();
+      return({ message: 'Book deleted successfully' });
     } catch (error) {
       console.error(error);
       return null
