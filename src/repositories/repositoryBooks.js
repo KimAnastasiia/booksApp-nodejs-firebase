@@ -22,10 +22,13 @@ repositoryBooks = {
   },
   getBookById: async (id) => {
     try {
-      const snapshot = await booksCollection.child(id).once('value')
-      const book = snapshot.val()
-      if (book) {
-        return (book)
+      const bookDoc  = await booksCollection.doc(id).get('value')
+      if (bookDoc.exists) {
+        const book = bookDoc.data();
+        return book;
+      } else {
+        console.log('Book not found');
+        return null;
       }
     } catch (error) {
       console.error(error);
