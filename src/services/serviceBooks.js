@@ -1,6 +1,6 @@
 const InputError = require('../errors/inputError')
 const LogicError = require('../errors/logicError')
-const { getAllBooks, getBookById, insertBook } = require("../repositories/repositoryBooks")
+const { getAllBooks, getBookById, insertBook, editBook } = require("../repositories/repositoryBooks")
 
 serviceBooks = {
     getAllBooks: async () => {
@@ -54,6 +54,29 @@ serviceBooks = {
             throw errors
 
         return newBookId
-    }
+    },
+    editBook: async ( id, author,title) => {
+        let errors = []
+
+        if (id == undefined)
+            errors.push(new InputError("id", 'id is undefined'));
+        if (author == undefined)
+            errors.push(new InputError("author", 'author is undefined'));
+        if (title == undefined)
+            errors.push(new InputError("title", 'title is undefined'));
+
+        if (errors.length > 0)
+            throw errors
+
+        let updatedBook = await editBook(id, author,title)
+        
+        if (updatedBook == null)
+            errors.push(new LogicError("not possible insert book"));
+
+        if (errors.length > 0)
+            throw errors
+
+        return updatedBook
+    },
 }
 module.exports = serviceBooks

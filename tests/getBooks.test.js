@@ -49,3 +49,29 @@ describe('GET /books/:id - return a book', () => {
   });
 });
 
+describe('PUT /books/:id - return updated book', () => {
+  it('should return a JSON book', async () => {
+
+    const bookData = {
+      author: 'testAuthorNew',
+      title: 'testTitleNew'
+    };
+    const response = await request(app)
+      .put('/books/'+bookTestId)
+      .send(bookData)
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ "author": "testAuthorNew", "title": "testTitleNew" });
+  });
+});
+
+describe('GET /books/:id - return a book', () => {
+  it('should return a JSON book', async () => {
+
+    const response = await request(app).get('/books/' + bookTestId);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ "author": "testAuthorNew", "title": "testTitleNew" });
+  });
+});
+
