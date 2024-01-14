@@ -37,11 +37,11 @@ repositoryBooks = {
   },
   insertBook: async (author, title) => {
     try {
-      const snapshot = await booksCollection.push({
+      const newBook = await booksCollection.add({
         author,
         title
       })
-      return snapshot.key
+      return newBook.id
     } catch (error) {
       console.error(error);
       return null
