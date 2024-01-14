@@ -50,11 +50,11 @@ repositoryBooks = {
   editBook: async (id, author, title) => {
     try {
       
-      const bookRef  = booksCollection.child(id);
+      const bookRef  = booksCollection.doc(id);
 
-      const book = await bookRef.once('value');
+      const bookDoc  = await bookRef.get();
 
-      if (!book.exists()) { 
+      if (!bookDoc.exists) { 
         console.log('Book not found');
         return null
       }
@@ -62,8 +62,9 @@ repositoryBooks = {
         author,
         title
       });
-      const updatedBookSnapshotAfterUpdate = await bookRef.once('value');
-      const updatedBook = updatedBookSnapshotAfterUpdate.val();
+      const updatedBookDoc = await bookRef.get();
+      const updatedBook = updatedBookDoc.data();
+  
       return updatedBook;
     } catch (error) {
       console.error(error);
