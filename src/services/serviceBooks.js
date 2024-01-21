@@ -105,6 +105,9 @@ serviceBooks = {
         if (file == null)
             errors.push(new InputError("file", 'file is undefined'));
 
+        if (file.size == 0)
+            errors.push(new InputError("file", 'file is undefined'));
+        
         if (errors.length > 0)
             throw errors
 
