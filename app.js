@@ -5,6 +5,8 @@ const initRouters = require("./src/routers/routers");
 const cors = require('cors')
 app.use(express.static('public'));
 app.use(cors())
+var fileUpload = require('express-fileupload');
+app.use(fileUpload());
 app.use(express.json())
 
 initRouters(app);

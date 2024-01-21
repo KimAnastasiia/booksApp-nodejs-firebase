@@ -1,4 +1,4 @@
-const {getAllBooks, getBookById, insertBook, editBook, deleteBook} = require("../services/serviceBooks")
+const {getAllBooks, getBookById, insertBook, editBook, deleteBook, postPhoto} = require("../services/serviceBooks")
 let express = require('express');
 let controllerBooks = express.Router();
 
@@ -58,5 +58,21 @@ controllerBooks = {
             return res.status(errors[0].code).json({ error: errors })
         }
     },
+    postPhoto: async (req, res) => {
+        try {
+            const file = req.files.file;
+            const id = req.params.id;
+
+            if (!file) {
+                return res.status(400).json({ error: 'No file provided' });
+            }
+            const filePath = await postPhoto(file, id);
+        
+            return res.json({ message: 'File uploaded successfully' });
+          } catch (errors) {
+            console.error(errors);
+            return res.status(errors[0].code).json({ error: errors })
+          }
+	},
 }
 module.exports = controllerBooks

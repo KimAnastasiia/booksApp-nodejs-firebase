@@ -1,7 +1,9 @@
+const { storage } = require('../../database')
 const InputError = require('../errors/inputError')
 const LogicError = require('../errors/logicError')
 const { getAllBooks, getBookById, insertBook, editBook, deleteBook } = require("../repositories/repositoryBooks")
-
+const fs = require('fs').promises;;
+const sharp = require("sharp");
 serviceBooks = {
     getAllBooks: async () => {
         let errors = []
@@ -25,7 +27,7 @@ serviceBooks = {
             throw errors
 
         let book = await getBookById(id)
-        
+
         if (book == null)
             errors.push(new LogicError("not possible get book by id"));
 
@@ -34,7 +36,7 @@ serviceBooks = {
 
         return book
     },
-    insertBook: async ( author,title) => {
+    insertBook: async (author, title) => {
         let errors = []
 
         if (author == undefined)
@@ -45,8 +47,8 @@ serviceBooks = {
         if (errors.length > 0)
             throw errors
 
-        let newBookId = await insertBook(author,title)
-        
+        let newBookId = await insertBook(author, title)
+
         if (newBookId == null)
             errors.push(new LogicError("not possible insert book"));
 
@@ -55,7 +57,7 @@ serviceBooks = {
 
         return newBookId
     },
-    editBook: async ( id, author,title) => {
+    editBook: async (id, author, title) => {
         let errors = []
 
         if (id == undefined)
@@ -68,8 +70,8 @@ serviceBooks = {
         if (errors.length > 0)
             throw errors
 
-        let updatedBook = await editBook(id, author,title)
-        
+        let updatedBook = await editBook(id, author, title)
+
         if (updatedBook == null)
             errors.push(new LogicError("not possible edit book"));
 
@@ -88,12 +90,47 @@ serviceBooks = {
             throw errors
 
         let answer = await deleteBook(id)
-        
+
         if (answer == null)
             errors.push(new LogicError("not possible delete book"));
 
         if (errors.length > 0)
             throw errors
+
+        return answer
+    },
+    postPhoto: async (file, id) => {
+        let errors = []
+
+        if (file == null)
+            errors.push(new InputError("file", 'file is undefined'));
+
+        if (errors.length > 0)
+            throw errors
+
+        let answer = { finish: true }
+
+        const filePath = `photos/${id}.png`;
+        const bucket = storage.bucket();
+
+        await sharp(file.data)
+            .resize(300,350)
+            .toFile("public/images/"+id+'.png')
+
+
+        await bucket.upload(`public/images/${id}.png`, {
+            destination: filePath,
+            // You can also add additional metadata if needed
+            metadata: {
+                metadata: {
+                    custom: 'metadata'
+                }
+            }
+        });
+        const filePathDelete = `public/images/${id}.png`;
+
+        // Delete the file
+        await fs.unlink(filePathDelete);
 
         return answer
     },
