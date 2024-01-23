@@ -52,8 +52,9 @@ controllerBooks = {
     deleteBook: async (req, res) => {
         
         try {
+            const userId = req.user.uid
             const id = req.params.id;
-            let answer = await deleteBook(id)
+            let answer = await deleteBook(id, userId)
             return res.json(answer)
         }
         catch (errors) {

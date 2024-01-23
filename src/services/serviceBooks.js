@@ -83,7 +83,7 @@ serviceBooks = {
         }
         if (errors.length > 0)
             throw errors
-        
+
         let updatedBook = await editBook(id, author, title)
 
         if (updatedBook == null)
@@ -94,15 +94,32 @@ serviceBooks = {
 
         return updatedBook
     },
-    deleteBook: async (id) => {
+    deleteBook: async (id, userId) => {
+
         let errors = []
 
         if (id == undefined)
             errors.push(new InputError("id", 'id is undefined'));
 
+        if (userId == undefined)
+            errors.push(new InputError("userId", 'userId is undefined'));
+
         if (errors.length > 0)
             throw errors
 
+        let book = await getBookById(id)
+
+        if (book == null){
+            errors.push(new LogicError("not possible get book by id"));
+        }else {
+
+            if(book.userId!=userId)
+                errors.push(new LogicError("user is not owner of the book"));
+        }
+
+        if (errors.length > 0)
+            throw errors
+        
         let answer = await deleteBook(id)
 
         if (answer == null)
