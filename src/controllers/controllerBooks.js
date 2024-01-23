@@ -27,8 +27,9 @@ controllerBooks = {
     postBook: async (req, res) => {
         
         try {
+            const userId = req.user.uid
             const { author,title } = req.body;
-            let newBookId = await insertBook(author,title)
+            let newBookId = await insertBook(author, title, userId)
             return res.json({id:newBookId})
         }
         catch (errors) {

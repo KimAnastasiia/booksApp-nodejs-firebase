@@ -35,11 +35,12 @@ repositoryBooks = {
       return null
     }
   },
-  insertBook: async (author, title) => {
+  insertBook: async (author, title, userId) => {
     try {
       const newBook = await booksCollection.add({
         author,
-        title
+        title,
+        userId
       })
       return newBook.id
     } catch (error) {

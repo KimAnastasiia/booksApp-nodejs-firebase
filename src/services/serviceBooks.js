@@ -36,18 +36,19 @@ serviceBooks = {
 
         return book
     },
-    insertBook: async (author, title) => {
+    insertBook: async (author, title, userId) => {
         let errors = []
 
         if (author == undefined)
             errors.push(new InputError("author", 'author is undefined'));
         if (title == undefined)
             errors.push(new InputError("title", 'title is undefined'));
-
+        if (userId == undefined)
+            errors.push(new InputError("userId", 'userId is undefined'));
         if (errors.length > 0)
             throw errors
 
-        let newBookId = await insertBook(author, title)
+        let newBookId = await insertBook(author, title, userId)
 
         if (newBookId == null)
             errors.push(new LogicError("not possible insert book"));
