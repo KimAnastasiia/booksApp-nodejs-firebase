@@ -39,9 +39,10 @@ controllerBooks = {
     putBook: async (req, res) => {
         
         try {
+            const userId = req.user.uid
             const id = req.params.id;
             const { author,title } = req.body;
-            let updatedBook = await editBook(id,author,title)
+            let updatedBook = await editBook(id,author,title, userId)
             return res.json(updatedBook)
         }
         catch (errors) {
