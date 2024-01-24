@@ -1,7 +1,7 @@
 const { storage } = require('../../database')
 const InputError = require('../errors/inputError')
 const LogicError = require('../errors/logicError')
-const { getAllBooks, getBookById, insertBook, editBook, deleteBook } = require("../repositories/repositoryBooks")
+const { getAllBooks, getBookById, insertBook, editBook, deleteBook, getAllBooksOfUser } = require("../repositories/repositoryBooks")
 const fs = require('fs').promises;;
 const sharp = require("sharp");
 serviceBooks = {
@@ -11,6 +11,24 @@ serviceBooks = {
 
         if (books == null)
             errors.push(new LogicError("not possible get all books"));
+
+        if (errors.length > 0)
+            throw errors
+
+        return books
+    },
+    getAllBooksOfUser: async (userId) => {
+        let errors = []
+        if (userId == undefined)
+            errors.push(new InputError("userId", 'userId is undefined'));
+
+        if (errors.length > 0)
+            throw errors
+        
+        let books = await getAllBooksOfUser(userId)
+
+        if (books == null)
+            errors.push(new LogicError("not possible get your books"));
 
         if (errors.length > 0)
             throw errors

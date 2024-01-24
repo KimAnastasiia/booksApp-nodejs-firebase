@@ -20,6 +20,24 @@ repositoryBooks = {
       return null
     }
   },
+  getAllBooksOfUser: async (userId) => {
+    try {
+      const snapshot = await booksCollection.where('userId', '==', userId).get();
+
+      const books = [];
+      snapshot.forEach((childSnapshot) => {
+        const book = childSnapshot.data(); 
+        book.id = childSnapshot.id; 
+        books.push(book);
+      });
+
+      return (books);
+
+    } catch (error) {
+      console.error(error);
+      return null
+    }
+  },
   getBookById: async (id) => {
     try {
       const bookDoc  = await booksCollection.doc(id).get('value')

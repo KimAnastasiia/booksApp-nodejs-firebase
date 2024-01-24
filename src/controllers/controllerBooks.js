@@ -1,4 +1,4 @@
-const {getAllBooks, getBookById, insertBook, editBook, deleteBook, postPhoto} = require("../services/serviceBooks")
+const {getAllBooks, getBookById, insertBook, editBook, deleteBook, postPhoto, getAllBooksOfUser} = require("../services/serviceBooks")
 let express = require('express');
 let controllerBooks = express.Router();
 
@@ -7,6 +7,17 @@ controllerBooks = {
         
         try {
             let books = await getAllBooks()
+            return res.json(books)
+        }
+        catch (errors) {
+            return res.status(errors[0].code).json({ error: errors })
+        }
+    },
+    getAllBooksOfUser: async (req, res) => {
+        
+        try {
+            const userId = req.user.uid
+            let books = await getAllBooksOfUser(userId)
             return res.json(books)
         }
         catch (errors) {
