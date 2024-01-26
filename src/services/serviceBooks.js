@@ -162,7 +162,7 @@ serviceBooks = {
         if (errors.length > 0)
             throw errors
 
-        let book = await getBookById(id)
+        let book = await getBookById(bookId)
 
         if (book == null || book.length==0){
             errors.push(new LogicError("not possible get book by id"));
@@ -172,7 +172,7 @@ serviceBooks = {
         }
         if (errors.length > 0)
             throw errors
-        
+
         let answer = { finish: true }
 
         const filePath = `photos/${bookId}.png`;
