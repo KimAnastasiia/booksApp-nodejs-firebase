@@ -178,20 +178,28 @@ serviceBooks = {
         const filePath = `photos/${bookId}.png`;
         const bucket = storage.bucket();
 
-        await sharp(file.data)
-            .resize(300,350)
-            .toFile("public/images/"+bookId+'.png')
+        try {
+            await sharp(file.data)
+                .resize(300,350)
+                .toFile("public/images/"+bookId+'.png')
+        
+                await bucket.upload(`public/images/${bookId}.png`, {
+                    destination: filePath
+                });
 
+                const filePathDelete = `public/images/${bookId}.png`;
+        
+                // Delete the file
+                await fs.unlink(filePathDelete);
+        
+                return answer
 
-        await bucket.upload(`public/images/${bookId}.png`, {
-            destination: filePath
-        });
-        const filePathDelete = `public/images/${bookId}.png`;
-
-        // Delete the file
-        await fs.unlink(filePathDelete);
-
-        return answer
+        } catch (error) {
+            errors.push(new LogicError("error in uploading photo"));
+        }
+        
+        if (errors.length > 0)
+            throw errors
     },
 }
 module.exports = serviceBooks
