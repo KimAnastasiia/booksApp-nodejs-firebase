@@ -75,12 +75,9 @@ controllerBooks = {
     postPhoto: async (req, res) => {
         try {
             const file = req.files.file;
-            const id = req.params.id;
-
-            if (!file) {
-                return res.status(400).json({ error: 'No file provided' });
-            }
-            const filePath = await postPhoto(file, id);
+            const bookId = req.params.id;
+            const userId = req.user.uid
+            await postPhoto(file, bookId, userId);
         
             return res.json({ message: 'File uploaded successfully' });
           } catch (errors) {

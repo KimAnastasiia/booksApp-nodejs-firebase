@@ -130,7 +130,6 @@ serviceBooks = {
         if (book == null){
             errors.push(new LogicError("not possible get book by id"));
         }else {
-
             if(book.userId!=userId)
                 errors.push(new LogicError("user is not owner of the book"));
         }
@@ -148,7 +147,7 @@ serviceBooks = {
 
         return answer
     },
-    postPhoto: async (file, id) => {
+    postPhoto: async (file, bookId, userId) => {
         let errors = []
 
         if (file == null)
@@ -156,30 +155,38 @@ serviceBooks = {
 
         if (file.size == 0)
             errors.push(new InputError("file", 'file is undefined'));
-        
+
+        if (bookId == null)
+            errors.push(new InputError("bookId", 'bookId is undefined'));
+
         if (errors.length > 0)
             throw errors
 
+        let book = await getBookById(id)
+
+        if (book == null || book.length==0){
+            errors.push(new LogicError("not possible get book by id"));
+        }else {
+            if(book.userId!=userId)
+                errors.push(new LogicError("user is not owner of the book"));
+        }
+        if (errors.length > 0)
+            throw errors
+        
         let answer = { finish: true }
 
-        const filePath = `photos/${id}.png`;
+        const filePath = `photos/${bookId}.png`;
         const bucket = storage.bucket();
 
         await sharp(file.data)
             .resize(300,350)
-            .toFile("public/images/"+id+'.png')
+            .toFile("public/images/"+bookId+'.png')
 
 
-        await bucket.upload(`public/images/${id}.png`, {
-            destination: filePath,
-            // You can also add additional metadata if needed
-            metadata: {
-                metadata: {
-                    custom: 'metadata'
-                }
-            }
+        await bucket.upload(`public/images/${bookId}.png`, {
+            destination: filePath
         });
-        const filePathDelete = `public/images/${id}.png`;
+        const filePathDelete = `public/images/${bookId}.png`;
 
         // Delete the file
         await fs.unlink(filePathDelete);
